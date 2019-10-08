@@ -61,20 +61,21 @@ public:
     用某行最小或某列最大与 target 比较，每次可剔除一整行或一整列
 
     ```c++
-    public class Solution {
-        public boolean Find(int target, int [][] array) {
-            int rows = array.length;
+    class Solution {
+    public:
+        bool Find(int target, vector<vector<int> > array) {
+            int rows = array.size();
             if(rows == 0){
                 return false;
             }
-            int cols = array[0].length;
+            int cols = array[0].size();
             if(cols == 0){
                 return false;
             }
             // 左下
             int row = rows-1;
             int col = 0;
-            while(row>=0 && col<cols){
+            while(row >= 0 && col < cols){
                 if(array[row][col] < target){
                     col++;
                 }else if(array[row][col] > target){
@@ -132,3 +133,125 @@ public:
 
 * 开辟新的数组存放
 * python或java中的相关函数（如java的replace()）
+
+### 从尾到头打印链表
+
+#### 题目描述
+
+输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
+
+#### 思路
+
+遍历链表，将元素放入栈中，再从栈顶取出
+
+```c++
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution {
+public:
+    vector<int> printListFromTailToHead(ListNode* head) {
+        stack<int> s;
+        for (ListNode *p = head; p != NULL; p = p->next)
+        {
+            s.push(p->val);
+        }
+        vector<int> ArrayList;
+        while(!s.empty())
+        {
+            ArrayList.push_back(s.top());
+            s.pop();
+        }
+        return ArrayList;
+    }
+};
+```
+#### 其他思路
+
+尾递归
+
+```c++
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution {
+public:
+    vector<int> ArrayList;
+    vector<int> printListFromTailToHead(ListNode* head) {
+        if (head != NULL)
+        {
+            printListFromTailToHead(head->next);
+            ArrayList.push_back(head->val);
+        }
+        return ArrayList;
+    }
+};
+```
+
+### 重建二叉树
+
+#### 题目描述
+
+输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+
+#### 思路
+
+递归。首先可以确定前序序列第一个数是整课树的根，在中序序列中，遍历找到根，在根左边的序列一定是其左子树，在根右边的序列一定是其右子树。在前序序列中，左子树的序列紧接着根，唯一需要确定是是左子树节点的个数，可以借助于中序序列左子树中序序列实现，右子树前序序列则为剩下部分。
+
+经过这样的划分，我们可以得到左子树前序序列，左子树中序序列，右子树前序序列，右子树中序序列。要确定根的左子树，必须依据左子树的前序序列和中序序列得到左子树；要确定根的右子树，必须依据右子树的前序序列和中序序列得到右子树。所以，可以采用递归的方法，分别求解左子树和右子树。
+
+```c++
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
+        int num = vin.size();
+        if (!num)
+            return NULL;
+        vector<int> pre_left, vin_left, pre_right, vin_right;
+        TreeNode *head = new TreeNode(pre[0]);
+        int rootindex;
+        for (int i = 0; i < num; i++)
+        {
+            if (vin[i] == pre[0])
+            {
+                rootindex = i;
+                break;
+            }
+        }
+        for (int i = 0; i < rootindex; i++)
+        {
+            pre_left.push_back(pre[i+1]);
+            vin_left.push_back(vin[i]);
+        }
+        for (int i = rootindex + 1; i < num; i++)
+        {
+            pre_right.push_back(pre[i]);
+            vin_right.push_back(vin[i]);
+        }
+        head->left = reConstructBinaryTree(pre_left,vin_left);
+        head->right = reConstructBinaryTree(pre_right,vin_right);
+        return head;
+    }
+};
+```
