@@ -42,8 +42,8 @@ public:
 ```
 #### 其他思路
 
-* 暴力法
-* 从左下找
+* 暴力法 O(n^2)
+* 从左下找 O(n)
 
     给定二维数组具有两个性质：
     
@@ -100,6 +100,7 @@ public:
 
 *需要注意的是，在判断为空格时必须先将空格数减1，再填充。想像一下，如果此时空格数没有减1，因为之前的字符中没有空格，一定是紧接着排列的，空格数不变的话，这个空格也会移到与之前字符紧接的位置，那么就没有空间来填充三位字符串了。*
 
+时间效率O(n)
 ```c++
 class Solution {
 public:
@@ -131,8 +132,8 @@ public:
 ```
 #### 其他思路
 
-* 开辟新的数组存放
-* python或java中的相关函数（如java的replace()）
+* 开辟新的数组存放 O(n)
+* python或java中的相关函数（如java的replace()） 效率依函数而定
 
 ### 03 从尾到头打印链表
 
@@ -143,6 +144,8 @@ public:
 #### 思路
 
 遍历链表，将元素放入栈中，再从栈顶取出
+
+时间效率O(n)
 
 ```c++
 /**
@@ -175,6 +178,8 @@ public:
 #### 其他思路
 
 尾递归
+
+时间效率也是O(n)，但递归消耗更多的空间
 
 ```c++
 /**
@@ -252,6 +257,107 @@ public:
         head->left = reConstructBinaryTree(pre_left,vin_left);
         head->right = reConstructBinaryTree(pre_right,vin_right);
         return head;
+    }
+};
+```
+### 05 用两个栈实现队列
+
+#### 题目描述
+
+用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+
+#### 思路
+
+用第一个栈存放数据，表示入队。当需要出队时，先将第一个栈中数据从栈顶取出放入第二个栈中，从第二个栈中取出栈顶元素为出队元素，再将第二个栈中所有数据从栈顶放入第一个栈（保持入队顺序）。
+
+```c++
+class Solution
+{
+public:
+    void push(int node) {
+        stack1.push(node);
+    }
+
+    int pop() {
+        while(!stack1.empty())
+        {
+            stack2.push(stack1.top());
+            stack1.pop();
+        }
+        int top_elem = stack2.top();
+        stack2.pop();
+        while(!stack2.empty())
+        {
+            stack1.push(stack2.top());
+            stack2.pop();
+        }
+        return top_elem;
+    }
+
+private:
+    stack<int> stack1;
+    stack<int> stack2;
+};
+```
+
+### 06 旋转数组的最小数字
+
+#### 题目描述
+
+把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。
+输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。
+例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。
+NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+
+#### 思路
+
+输入的是非递减排序的数组的一个旋转，可以看做旋转将最小的值藏在了中间，那么就很好做了，直接从前往后遍历，如果不满足递增顺序，第一个不满足的数就是最小的值。当然，考虑到数组没有翻转，那么第一个数就是最小值。
+
+时间效率O(n)
+```c++
+class Solution {
+public:
+    int minNumberInRotateArray(vector<int> rotateArray) {
+        int length = rotateArray.size();
+        if (length == 0)
+            return 0;
+        else
+        {
+            int minNum = rotateArray[0];
+            for (int i = 1; i < length; i++)
+            {
+                if (rotateArray[i] < rotateArray[i-1])
+                {
+                    minNum = rotateArray[i];
+                    break;
+                }
+            }
+            return minNum;
+        }
+    }
+};
+```
+
+#### 其他思路
+
+* 排序后输出第一个值
+
+    c++里面用的是sort函数，效率为O(nlogn)
+
+* 优先队列O(n)
+
+```c++
+class Solution {
+public:
+    int minNumberInRotateArray(vector<int> rotateArray) {
+        if(rotateArray.empty())
+            return 0;
+        priority_queue<int, vector<int>, greater<int>> result;
+        for(int i = 0; i < rotateArray.size(); i++)
+        {
+            result.push(rotateArray.at(i));
+        }
+        return result.top();
     }
 };
 ```
