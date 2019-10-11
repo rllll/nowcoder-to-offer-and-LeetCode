@@ -545,3 +545,70 @@ public:
 
 * [优化存储](#Fibonacci)（见上一题斐波那契数列）
 
+### 09 变态跳台阶
+
+#### 题目描述
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+
+#### 思路
+
+还是求递推式，不过有了一些变化：（依旧假设跳上n级台阶有F[n]种跳法）
+
+F[1] = 1
+
+F[2] = F[1] + 1
+
+F[3] = F[2] + F[1] + 1 = 2F[2]
+
+F[4] = F[3] + F[2] + F[1] + 1 = 2F[2] + F[2] + F[2] = 4F[2] = 2^2*F[2]
+
+...
+
+F[n] = 2^(n-2)*F[2] = 2^(n-1)
+
+答案显而易见
+
+为了快速得到2^(n-1)，采用快速幂运算求解，时间效率O(logn)
+
+```c++
+class Solution {
+public:
+    int jumpFloorII(int number) {
+        number -= 1;
+        int ans = 1, base = 2;
+        while(number)
+        {
+            if (number & 1)
+                ans *= base;
+            base *= base;
+            number >>= 1;
+        }
+        return ans;
+    }
+};
+```
+
+#### 其他思路
+
+到达n级台阶，可以从1...n-1跳一步，假设跳上n级台阶有F[n]种跳法：
+
+F[n] = F[n-1] + F[n-2] + ... + F[1]
+
+F[n-1] = F[n-2] + F[n-3] + ... + F[1]
+
+两式相减，得到F[n] = 2F[n-1]
+
+已知F[1] = 1，可用递推或递归实现，这里给出递推写法，时间效率O(n)
+
+```c++
+class Solution {
+public:
+    int jumpFloorII(int number) {
+        int n = 1;
+        for (int i = 2; i <= number; i++)
+            n *= 2;
+        return n;
+    }
+};
+```
