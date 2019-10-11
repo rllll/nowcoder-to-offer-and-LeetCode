@@ -505,3 +505,43 @@ public:
 
 * [知乎上的七大解法](https://zhuanlan.zhihu.com/p/53781455)
 
+### 08 跳台阶
+
+#### 题目描述
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
+
+#### 思路
+
+跳到n级台阶，要么是从n-1级跳1级到达，要么是从n-2级跳2级到达。
+
+假设青蛙跳到n级台阶有F[n]种跳法，容易得到递推式F[n] = F[n-1] + F[n-2]。
+
+n = 1时，F[1] = 1
+
+n = 2时，F[2] = 2
+
+时间效率O(2^n)
+
+```c++
+class Solution {
+public:
+    int jumpFloor(int number) {
+        if (number == 1)
+            return 1;
+        else if (number == 2)
+            return 2;
+        else
+        {
+            return jumpFloor(number-2) + jumpFloor(number-1);
+        }
+    }
+};
+```
+
+#### 其他思路
+
+* 直接递推
+
+* [优化存储](*优化存储)（见上一题斐波那契数列）
+
