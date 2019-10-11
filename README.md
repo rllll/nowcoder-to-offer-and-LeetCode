@@ -459,7 +459,7 @@ public:
 
 * 矩阵法
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+![](http://latex.codecogs.com/gif.latex?\\frac{1}{1+sin(x)})
 
 斐波那契数列
 
