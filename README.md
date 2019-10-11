@@ -431,39 +431,76 @@ public:
 
 * 持续优化
 
-利用 sum 存储第 n-1 项，例如当计算完 f(5) 时 sum 存储的是 f(5) 的值，当需要计算 f(6) 时，f(6) = f(5) + f(4)，sum 存储的 f(5)，f(4) 存储在 one 中，由 f(5)-f(3) 得到。
+    利用 sum 存储第 n-1 项，例如当计算完 f(5) 时 sum 存储的是 f(5) 的值，当需要计算 f(6) 时，f(6) = f(5) + f(4)，sum 存储的 f(5)，f(4) 存储在 one 中，由 f(5)-f(3) 得到。
 
-时间复杂度O(n)
+    时间复杂度O(n)
 
-空间复杂度O(1)
+    空间复杂度O(1)
 
-```c++
-class Solution {
-public:
-    int Fibonacci(int n) {
-        if(n == 0){
-            return 0;
-        }else if(n == 1){
-            return 1;
+    ```c++
+    class Solution {
+    public:
+        int Fibonacci(int n) {
+            if(n == 0){
+                return 0;
+            }else if(n == 1){
+                return 1;
+            }
+            int sum = 1;
+            int one = 0;
+            for(int i=2;i<=n;i++){
+                sum = sum + one;
+                one = sum - one;
+            }
+            return sum;
         }
-        int sum = 1;
-        int one = 0;
-        for(int i=2;i<=n;i++){
-            sum = sum + one;
-            one = sum - one;
-        }
-        return sum;
-    }
-};
-```
+    };
+    ```
 
 * 矩阵法
 
-![](http://latex.codecogs.com/gif.latex?\\frac{1}{1+sin(x)})
+    时间效率O(logn)
 
-斐波那契数列
+    [原理推导](https://blog.csdn.net/u012061345/article/details/52224623#commentBox)
+    
+    java代码实现
+    ```java
+    class Mat { // 矩阵对象
+        int n = 2;
+        int m[][] = new int[n][n];
+        public Mat mul(Mat a) { // 矩阵乘法
+            Mat b = new Mat();
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++)
+                    for (int k = 0; k < n; k++)
+                        b.m[i][j] += this.m[i][k] * a.m[k][j];
+            }
+            return b;
+        }
+    }
+    public class Solution {
+        public static int Fibonacci(int n) {
+            if(n==0){
+                return 0;
+            }
+            Mat ans = new Mat();
+            for (int i = 0; i < ans.n; i++) { //单位矩阵初始化
+                ans.m[i][i] = 1;
+            }
+            Mat base = new Mat();
+            base.m[0][0] = base.m[0][1] = base.m[1][0] = 1; // base矩阵初始化
+            base.m[1][1] = 0;
+            n -= 1;
+            while (n > 0) { // 快速幂：求base矩阵的n-1次方
+                if ((n & 1) != 0) {
+                    ans = ans.mul(base);
+                }
+                n >>= 1;
+                base = base.mul(base);
+            }
+            return ans.m[0][0];
+        }
+    }
+    ```
 
-$$
-F(n) = F(n-1) + F(n-2)
-$$
-
+* [知乎上的七大解法](https://zhuanlan.zhihu.com/p/53781455)
