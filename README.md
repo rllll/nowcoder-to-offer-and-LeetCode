@@ -361,3 +361,107 @@ public:
     }
 };
 ```
+
+### 07 斐波那契数列
+
+#### 题目描述
+
+大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0）。
+n<=39
+
+#### 思路
+
+这题递归会超时，所以直接递推。
+
+时间效率O(n)
+
+```c++
+class Solution {
+public:
+    int Fibonacci(int n) {
+        int f[n+1];
+        f[0] = 0;
+        f[1] = 1;
+        f[2] = 1;
+        for (int i = 3; i <= n; i++)
+        {
+            f[i] = f[i-1] + f[i-2];
+        }
+        return f[n];
+    }
+};
+```
+#### 其他思路
+
+* 优化存储
+
+其实我们可以发现每次就用到了最近的两个数，所以我们可以只存储最近的两个数：
+
+sum存储第 n 项的值
+
+one 存储第 n-1 项的值
+
+two 存储第 n-2 项的值
+
+时间复杂度O(n)
+
+空间复杂度O(1)
+
+```c++
+class Solution {
+public:
+    int Fibonacci(int n) {
+        if(n == 0){
+            return 0;
+        }else if(n == 1){
+            return 1;
+        }
+        int sum = 0;
+        int two = 0;
+        int one = 1;
+        for(int i=2;i<=n;i++){
+            sum = two + one;
+            two = one;
+            one = sum;
+        }
+        return sum;
+    }
+};
+```
+
+* 持续优化
+
+利用 sum 存储第 n-1 项，例如当计算完 f(5) 时 sum 存储的是 f(5) 的值，当需要计算 f(6) 时，f(6) = f(5) + f(4)，sum 存储的 f(5)，f(4) 存储在 one 中，由 f(5)-f(3) 得到。
+
+时间复杂度O(n)
+
+空间复杂度O(1)
+
+```c++
+class Solution {
+public:
+    int Fibonacci(int n) {
+        if(n == 0){
+            return 0;
+        }else if(n == 1){
+            return 1;
+        }
+        int sum = 1;
+        int one = 0;
+        for(int i=2;i<=n;i++){
+            sum = sum + one;
+            one = sum - one;
+        }
+        return sum;
+    }
+};
+```
+
+* 矩阵法
+
+斐波那契数列
+
+$$
+F(n) = F(n-1) + F(n-2)
+$$
+
